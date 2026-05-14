@@ -9,6 +9,10 @@ const buildUrl = (path) => {
   const base = API_BASE_URL.replace(/\/$/, '')
   const cleanPath = path.startsWith('/') ? path : `/${path}`
 
+  if (base.endsWith('/api') && cleanPath.startsWith('/api/')) {
+    return `${base}${cleanPath.slice(4)}`
+  }
+
   return `${base}${cleanPath}`
 }
 
@@ -42,7 +46,15 @@ const request = async (path, options = {}) => {
 
   if (!response.ok) {
     const body = await parseJsonSafe(response)
-    const message = body?.message || `Request gagal (${response.status}).`
+    let message = ''
+
+    if (response.status === 401 || response.status === 403) {
+      message = `API key dashboard belum valid (HTTP ${response.status}).`
+    } else if (body?.message) {
+      message = `${body.message} (HTTP ${response.status}).`
+    } else {
+      message = `Request gagal (HTTP ${response.status}).`
+    }
     const error = new Error(message)
 
     error.status = response.status

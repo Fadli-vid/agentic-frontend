@@ -29,8 +29,12 @@ function App() {
       setTasks(taskData)
       setExpenses(expenseData)
     } catch (error) {
-      console.error('Gagal mengambil data awal:', error)
-      setErrorMessage('Gagal memuat data dashboard. Coba refresh ya.')
+      console.error('Gagal mengambil data awal:', {
+        message: error?.message,
+        status: error?.status,
+        body: error?.body,
+      })
+      setErrorMessage(error?.message || 'Gagal memuat data dashboard. Coba refresh ya.')
     } finally {
       setIsLoading(false)
     }
@@ -63,8 +67,12 @@ function App() {
     try {
       await updateTaskStatus(id, nextIsCompleted)
     } catch (error) {
-      console.error('Gagal memperbarui status tugas:', error)
-      setErrorMessage('Gagal memperbarui status tugas. Coba ulangi ya.')
+      console.error('Gagal memperbarui status tugas:', {
+        message: error?.message,
+        status: error?.status,
+        body: error?.body,
+      })
+      setErrorMessage(error?.message || 'Gagal memperbarui status tugas. Coba ulangi ya.')
       setTasks(previousTasks)
     }
   }
@@ -78,8 +86,12 @@ function App() {
     try {
       await deleteTask(id)
     } catch (error) {
-      console.error('Gagal menghapus tugas:', error)
-      setErrorMessage('Gagal menghapus tugas. Coba lagi ya.')
+      console.error('Gagal menghapus tugas:', {
+        message: error?.message,
+        status: error?.status,
+        body: error?.body,
+      })
+      setErrorMessage(error?.message || 'Gagal menghapus tugas. Coba lagi ya.')
       setTasks(previousTasks)
     }
   }
@@ -93,8 +105,12 @@ function App() {
     try {
       await deleteExpense(id)
     } catch (error) {
-      console.error('Gagal menghapus pengeluaran:', error)
-      setErrorMessage('Gagal menghapus pengeluaran. Coba lagi ya.')
+      console.error('Gagal menghapus pengeluaran:', {
+        message: error?.message,
+        status: error?.status,
+        body: error?.body,
+      })
+      setErrorMessage(error?.message || 'Gagal menghapus pengeluaran. Coba lagi ya.')
       setExpenses(previousExpenses)
     }
   }
