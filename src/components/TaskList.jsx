@@ -1,4 +1,4 @@
-function TaskList({ tasks, onToggle, onDelete }) {
+function TaskList({ tasks, onToggle, onDelete, isLoading }) {
   const completedCount = tasks.filter(task => Boolean(task.is_completed)).length
 
   return (
@@ -13,7 +13,9 @@ function TaskList({ tasks, onToggle, onDelete }) {
         </span>
       </div>
 
-      {tasks.length === 0 ? (
+      {isLoading ? (
+        <div className="empty-state">Memuat daftar tugas...</div>
+      ) : tasks.length === 0 ? (
         <div className="empty-state">Belum ada tugas. Tambahkan lewat Telegram.</div>
       ) : (
         <ul className="list">

@@ -2,7 +2,7 @@ const rupiahFormatter = new Intl.NumberFormat('id-ID')
 
 const formatRupiah = (value) => `Rp ${rupiahFormatter.format(value)}`
 
-function ExpenseList({ expenses, total, onDelete }) {
+function ExpenseList({ expenses, total, onDelete, isLoading }) {
   return (
     <section className="card">
       <div className="card-header">
@@ -18,7 +18,9 @@ function ExpenseList({ expenses, total, onDelete }) {
         <strong>{formatRupiah(total)}</strong>
       </div>
 
-      {expenses.length === 0 ? (
+      {isLoading ? (
+        <div className="empty-state">Memuat catatan pengeluaran...</div>
+      ) : expenses.length === 0 ? (
         <div className="empty-state">Belum ada catatan pengeluaran.</div>
       ) : (
         <ul className="list">
