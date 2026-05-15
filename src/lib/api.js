@@ -76,6 +76,32 @@ export const fetchExpenses = async () => {
   return Array.isArray(data) ? data : []
 }
 
+export const fetchAgentEvents = async () => {
+  const data = await request('/api/agent-events')
+  return Array.isArray(data) ? data : []
+}
+
+export const fetchWorkflowRuns = async () => {
+  const data = await request('/api/workflow-runs')
+  return Array.isArray(data) ? data : []
+}
+
+export const fetchReminders = async () => {
+  const data = await request('/api/reminders')
+  return Array.isArray(data) ? data : []
+}
+
+export const fetchAutomations = async () => {
+  const data = await request('/api/automations')
+  return Array.isArray(data) ? data : []
+}
+
+export const updateAutomation = (id, payload) =>
+  request(`/api/automations/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+
 export const updateTaskStatus = (id, isCompleted) =>
   request(`/api/tasks/${id}`, {
     method: 'PATCH',

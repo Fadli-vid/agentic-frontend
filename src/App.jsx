@@ -1,43 +1,116 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import './App.css'
+import AgentActivityList from './components/AgentActivityList'
+import AutomationList from './components/AutomationList'
 import ExpenseList from './components/ExpenseList'
+import ReminderList from './components/ReminderList'
 import TaskList from './components/TaskList'
+import WorkflowRunList from './components/WorkflowRunList'
 import {
   deleteExpense,
   deleteTask,
+  fetchAgentEvents,
+  fetchAutomations,
   fetchExpenses,
+  fetchReminders,
   fetchTasks,
+  fetchWorkflowRuns,
+  updateAutomation,
   updateTaskStatus,
 } from './lib/api'
 
 function App() {
   const [tasks, setTasks] = useState([])
   const [expenses, setExpenses] = useState([])
+  const [agentEvents, setAgentEvents] = useState([])
+  const [workflowRuns, setWorkflowRuns] = useState([])
+  const [reminders, setReminders] = useState([])
+  const [automations, setAutomations] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [monitoringErrors, setMonitoringErrors] = useState({})
 
   const loadData = useCallback(async () => {
     setIsLoading(true)
     setErrorMessage('')
+    setMonitoringErrors({})
 
-    try {
-      const [taskData, expenseData] = await Promise.all([
-        fetchTasks(),
-        fetchExpenses(),
-      ])
-
-      setTasks(taskData)
-      setExpenses(expenseData)
-    } catch (error) {
-      console.error('Gagal mengambil data awal:', {
-        message: error?.message,
-        status: error?.status,
-        body: error?.body,
-      })
-      setErrorMessage(error?.message || 'Gagal memuat data dashboard. Coba refresh ya.')
-    } finally {
-      setIsLoading(false)
+    const safeFetch = async (promise, label) => {
+      try {
+        const data = await promise
+        return { ok: true, data }
+      } catch (error) {
+        console.error(`Gagal memuat ${label}:`, {
+          message: error?.message,
+          status: error?.status,
+          body: error?.body,
+        })
+        return { ok: false, error }
+      }
     }
+
+    const [
+      tasksResult,
+      expensesResult,
+      eventsResult,
+      runsResult,
+      remindersResult,
+      automationsResult,
+    ] = await Promise.all([
+      safeFetch(fetchTasks(), 'tugas'),
+      safeFetch(fetchExpenses(), 'pengeluaran'),
+      safeFetch(fetchAgentEvents(), 'aktivitas agent'),
+      safeFetch(fetchWorkflowRuns(), 'workflow runs'),
+      safeFetch(fetchReminders(), 'pengingat'),
+      safeFetch(fetchAutomations(), 'automasi'),
+    ])
+
+    if (tasksResult.ok) {
+      setTasks(tasksResult.data)
+    } else {
+      const message = tasksResult.error?.message || 'Gagal memuat daftar tugas.'
+      setErrorMessage(message)
+    }
+
+    if (expensesResult.ok) {
+      setExpenses(expensesResult.data)
+    } else {
+      const message = expensesResult.error?.message || 'Gagal memuat catatan pengeluaran.'
+      setErrorMessage(prev => (prev ? `${prev} ${message}` : message))
+    }
+
+    const nextMonitoringErrors = {}
+
+    if (eventsResult.ok) {
+      setAgentEvents(eventsResult.data)
+    } else {
+      nextMonitoringErrors.agentEvents =
+        eventsResult.error?.message || 'Gagal memuat aktivitas agent.'
+    }
+
+    if (runsResult.ok) {
+      setWorkflowRuns(runsResult.data)
+    } else {
+      nextMonitoringErrors.workflowRuns =
+        runsResult.error?.message || 'Gagal memuat workflow runs.'
+    }
+
+    if (remindersResult.ok) {
+      setReminders(remindersResult.data)
+    } else {
+      nextMonitoringErrors.reminders =
+        remindersResult.error?.message || 'Gagal memuat pengingat.'
+    }
+
+    if (automationsResult.ok) {
+      setAutomations(automationsResult.data)
+    } else {
+      nextMonitoringErrors.automations =
+        automationsResult.error?.message || 'Gagal memuat automasi.'
+    }
+
+    setMonitoringErrors(nextMonitoringErrors)
+    setIsLoading(false)
   }, [])
 
   useEffect(() => {
@@ -48,6 +121,13 @@ function App() {
     () => expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0),
     [expenses]
   )
+
+  const monitoringErrorMessage = useMemo(() => {
+    const messages = Object.values(monitoringErrors).filter(Boolean)
+    if (messages.length === 0) return ''
+    if (messages.length === 1) return messages[0]
+    return 'Sebagian data monitoring gagal dimuat. Coba refresh ya.'
+  }, [monitoringErrors])
 
   const handleToggleTask = async (id) => {
     setErrorMessage('')
@@ -115,6 +195,32 @@ function App() {
     }
   }
 
+  const handleToggleAutomation = async (id, nextValue) => {
+    const previousAutomations = automations
+
+    setMonitoringErrors(prev => ({ ...prev, automations: '' }))
+    setAutomations(prev =>
+      prev.map(automation =>
+        automation.id === id ? { ...automation, is_enabled: nextValue } : automation
+      )
+    )
+
+    try {
+      await updateAutomation(id, { is_enabled: nextValue })
+    } catch (error) {
+      console.error('Gagal memperbarui automasi:', {
+        message: error?.message,
+        status: error?.status,
+        body: error?.body,
+      })
+      setMonitoringErrors(prev => ({
+        ...prev,
+        automations: error?.message || 'Gagal memperbarui automasi. Coba lagi ya.',
+      }))
+      setAutomations(previousAutomations)
+    }
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -129,6 +235,9 @@ function App() {
 
       {isLoading && <div className="status-message">Memuat data dashboard...</div>}
       {errorMessage && <div className="status-message status-error">{errorMessage}</div>}
+      {monitoringErrorMessage && (
+        <div className="status-message status-error">{monitoringErrorMessage}</div>
+      )}
 
       <main className="app-grid">
         <TaskList
@@ -142,6 +251,27 @@ function App() {
           total={totalExpenses}
           onDelete={handleDeleteExpense}
           isLoading={isLoading}
+        />
+        <AgentActivityList
+          events={agentEvents}
+          isLoading={isLoading}
+          errorMessage={monitoringErrors.agentEvents}
+        />
+        <WorkflowRunList
+          runs={workflowRuns}
+          isLoading={isLoading}
+          errorMessage={monitoringErrors.workflowRuns}
+        />
+        <ReminderList
+          reminders={reminders}
+          isLoading={isLoading}
+          errorMessage={monitoringErrors.reminders}
+        />
+        <AutomationList
+          automations={automations}
+          isLoading={isLoading}
+          errorMessage={monitoringErrors.automations}
+          onToggle={handleToggleAutomation}
         />
       </main>
     </div>
