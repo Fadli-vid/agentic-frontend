@@ -225,34 +225,38 @@ function App() {
   return (
     <div className="app-layout">
       <aside className="pixel-sidebar">
-        <div className="sidebar-logo">?? KOBI OS</div>
+        <div className="sidebar-logo">KOBI OS</div>
         <nav className="sidebar-nav">
-          <a href="#" className="nav-active">?? Dashboard</a>
-          <a href="#">?? Schedule</a>
-          <a href="#">?? Study Plan</a>
-          <a href="#">?? Budget</a>
-          <a href="#">?? Goals</a>
-          <a href="#">?? Memory</a>
+          <a href="#" className="nav-active">Dashboard</a>
+          <a href="#">Schedule</a>
+          <a href="#">Study Plan</a>
+          <a href="#">Budget</a>
+          <a href="#">Goals</a>
+          <a href="#">Memory</a>
         </nav>
         <div className="sidebar-footer">
-          <div className="status-indicator">?? System Online</div>
+          <div className="status-indicator">System Online</div>
         </div>
       </aside>
-      
+
       <div className="app-content">
         <header className="app-header">
           <p className="app-eyebrow">Agentic AI Core // Kobi</p>
           <div className="nl-command-bar">
             <span className="prompt-arrow">&gt;</span>
-            <input type="text" placeholder="Tell Kobi what to do... (e.g. 'Add Math test to schedule')" className="nl-input" />
+            <input
+              type="text"
+              placeholder="Tell Kobi what to do (example: Add math test to schedule)"
+              className="nl-input"
+            />
             <button className="nl-submit">EXECUTE</button>
           </div>
-          <h1 className="app-title">Welcome Back, Master!</h1>
-          <p className="app-subtitle">I've analyzed your data. You have {tasks.length} tasks pending.</p>
+          <h1 className="app-title">Welcome Back</h1>
+          <p className="app-subtitle">I have analyzed your data. You have {tasks.length} tasks pending.</p>
           <div className="app-meta">
-            <span className="meta-pill">?? Quests: {tasks.length}</span>
-            <span className="meta-pill">?? Gold: {expenses.length}</span>
-            <span className="meta-pill">?? Streak: 12 days</span>
+            <span className="meta-pill">Quests: {tasks.length}</span>
+            <span className="meta-pill">Gold: {expenses.length}</span>
+            <span className="meta-pill">Streak: 12 days</span>
           </div>
         </header>
 
@@ -265,8 +269,11 @@ function App() {
         <div className="dashboard-grid">
           <div className="main-column">
             <div className="pixel-card hero-widget">
-              <h2 className="card-title">?? Daily Brief</h2>
-              <p className="widget-text">Good morning! Your focus today should be finishing your Science essay and keeping expenses under . No rain expected.</p>
+              <h2 className="card-title">Daily Brief</h2>
+              <p className="widget-text">
+                Good morning! Focus on finishing your science essay and keep expenses under 15.
+                No rain expected.
+              </p>
             </div>
 
             <div className="quest-log">
@@ -277,21 +284,23 @@ function App() {
                 isLoading={isLoading}
               />
             </div>
-            
+
             <div className="grid-2col">
               <div className="pixel-card">
-                <h2 className="card-title">?? Habit Tracker</h2>
+                <h2 className="card-title">Habit Tracker</h2>
                 <div className="habit-grid">
-                  <div className="habit-item">?? Drink Water: [因[因[ ][ ]</div>
-                  <div className="habit-item">?? Read 10p: [因[因[因[ ]</div>
+                  <div className="habit-item">Drink Water: [X][X][ ][ ]</div>
+                  <div className="habit-item">Read 10p: [X][X][X][ ]</div>
                 </div>
               </div>
 
               <div className="pixel-card">
-                <h2 className="card-title">?? Goal Tracker</h2>
+                <h2 className="card-title">Goal Tracker</h2>
                 <div className="goal-item">
                   <span>Learn React</span>
-                  <div className="pixel-progress"><div className="progress-fill" style={{width: '60%'}}></div></div>
+                  <div className="pixel-progress">
+                    <div className="progress-fill" style={{ width: '60%' }}></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -306,22 +315,24 @@ function App() {
             </div>
 
             <div className="pixel-card">
-              <h2 className="card-title">?? Study Planner & Schedule</h2>
+              <h2 className="card-title">Study Planner & Schedule</h2>
               <div className="schedule-timeline">
                 <div className="time-block"><span>10:00 AM</span> - Algorithm Class</div>
                 <div className="time-block"><span>02:00 PM</span> - Study session (Library)</div>
               </div>
             </div>
-            
+
             <div className="pixel-card highlights-card">
-              <h2 className="card-title">? Weekly Review Summary</h2>
-              <p className="widget-text">Last week was productive! You completed 80% of tasks but went 10% over budget.</p>
+              <h2 className="card-title">Weekly Review Summary</h2>
+              <p className="widget-text">
+                Last week was productive! You completed 80% of tasks but went 10% over budget.
+              </p>
             </div>
           </div>
 
           <div className="side-column">
             <div className="pixel-card suggestion-panel">
-              <h2 className="card-title">?? AI Suggestions</h2>
+              <h2 className="card-title">AI Suggestions</h2>
               <ul className="suggestion-list">
                 <li>Looks like you have a free hour at 4 PM. Review CS notes?</li>
                 <li>You're spending a lot on coffee this week, brew at home?</li>
@@ -335,9 +346,9 @@ function App() {
             />
 
             <div className="pixel-card budget-alert">
-              <h2 className="card-title">?? Budget Alert</h2>
+              <h2 className="card-title">Budget Alert</h2>
               <div className="alert-box">
-                You are close to your weekly spending limit! Reduce unnecessary buys.
+                You are close to your weekly spending limit. Reduce unnecessary buys.
               </div>
             </div>
 
@@ -347,11 +358,11 @@ function App() {
               errorMessage={monitoringErrors.automations}
               onToggle={handleToggleAutomation}
             />
-            
+
             <div className="pixel-card memory-timeline">
-              <h2 className="card-title">?? Memory Log</h2>
-              <div className="memory-item">&gt; Remembered that Midterms start on Nov 15.</div>
-              <div className="memory-item">&gt; Fact updated: 'Prefers studying at night.'</div>
+              <h2 className="card-title">Memory Log</h2>
+              <div className="memory-item">&gt; Remembered that midterms start on Nov 15.</div>
+              <div className="memory-item">&gt; Fact updated: Prefers studying at night.</div>
             </div>
           </div>
         </div>

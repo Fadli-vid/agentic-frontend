@@ -17,7 +17,7 @@
 
 /* Mascot pseudo-element */
 .app-header::after {
-  content: '??'; /* pixel mascot */
+  content: 'KO';
   font-size: 48px;
   position: absolute;
   top: -24px;
@@ -224,7 +224,7 @@
   position: relative;
 }
 .task-checkbox:checked::after {
-  content: '?';
+  content: 'X';
   position: absolute;
   top: -2px;
   left: 2px;
