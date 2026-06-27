@@ -1,3 +1,6 @@
-// TODO: Connect when backend /api/goals endpoint is available
-export const fetchGoals = async () => []
+import { fetchArray } from './client'
+
+export const fetchGoals = () => fetchArray('/api/goals')
+
+// TODO: Connect when backend PATCH /api/goals/:id is available
 export const updateGoal = async (/* id, data */) => ({})
