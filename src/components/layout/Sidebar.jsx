@@ -1,13 +1,10 @@
 import { NavLink } from 'react-router-dom'
 import { NAVIGATION } from '../../constants/navigation'
-import { useApp } from '../../context/AppContext'
 import PixelMascot from '../shared/PixelMascot'
 
 function Sidebar() {
-  const { sidebarOpen } = useApp()
-
   return (
-    <aside className={`pixel-sidebar ${sidebarOpen ? '' : 'is-collapsed'}`}>
+    <aside className="pixel-sidebar">
       <div className="sidebar-brand">
         <div className="brand-mark">
           <span className="brand-pixel" aria-hidden="true" />

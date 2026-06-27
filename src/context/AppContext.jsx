@@ -1,15 +1,12 @@
-import { createContext, useCallback, useContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 const AppContext = createContext(null)
 
 export function AppProvider({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [currentPageTitle, setCurrentPageTitle] = useState('Dashboard')
 
-  const toggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), [])
-
   return (
-    <AppContext.Provider value={{ sidebarOpen, toggleSidebar, currentPageTitle, setCurrentPageTitle }}>
+    <AppContext.Provider value={{ currentPageTitle, setCurrentPageTitle }}>
       {children}
     </AppContext.Provider>
   )
