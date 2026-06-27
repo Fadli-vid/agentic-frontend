@@ -1,7 +1,5 @@
-const normalizeStatusClass = (status) => {
-  if (!status) return 'status-unknown'
-  return `status-${String(status).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
-}
+import EmptyState from '../shared/EmptyState'
+import StatusPill from '../shared/StatusPill'
 
 function AutomationList({ automations, isLoading, errorMessage, onToggle }) {
   return (
@@ -15,11 +13,11 @@ function AutomationList({ automations, isLoading, errorMessage, onToggle }) {
       </div>
 
       {isLoading ? (
-        <div className="empty-state">Memuat automasi...</div>
+        <EmptyState loading />
       ) : errorMessage ? (
-        <div className="empty-state empty-state-error">{errorMessage}</div>
+        <EmptyState error={errorMessage} />
       ) : automations.length === 0 ? (
-        <div className="empty-state">Belum ada automasi.</div>
+        <EmptyState message="Belum ada automasi." />
       ) : (
         <ul className="list">
           {automations.map(automation => {
@@ -33,11 +31,7 @@ function AutomationList({ automations, isLoading, errorMessage, onToggle }) {
                   </span>
                 </div>
                 <div className="automation-meta">
-                  <span
-                    className={`status-pill ${normalizeStatusClass(isEnabled ? 'enabled' : 'disabled')}`}
-                  >
-                    {isEnabled ? 'enabled' : 'disabled'}
-                  </span>
+                  <StatusPill status={isEnabled ? 'enabled' : 'disabled'} />
                   <button
                     className={`toggle-button ${isEnabled ? 'is-enabled' : ''}`}
                     type="button"

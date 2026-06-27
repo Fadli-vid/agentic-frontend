@@ -1,19 +1,6 @@
-const dateFormatter = new Intl.DateTimeFormat('id-ID', {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-})
-
-const formatDate = (value) => {
-  if (!value) return '-'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return '-'
-  return dateFormatter.format(date)
-}
-
-const normalizeStatusClass = (status) => {
-  if (!status) return 'status-unknown'
-  return `status-${String(status).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
-}
+import EmptyState from '../shared/EmptyState'
+import StatusPill from '../shared/StatusPill'
+import { formatDate } from '../../lib/formatters'
 
 function AgentActivityList({ events, isLoading, errorMessage }) {
   return (
@@ -27,11 +14,11 @@ function AgentActivityList({ events, isLoading, errorMessage }) {
       </div>
 
       {isLoading ? (
-        <div className="empty-state">Memuat aktivitas agent...</div>
+        <EmptyState loading />
       ) : errorMessage ? (
-        <div className="empty-state empty-state-error">{errorMessage}</div>
+        <EmptyState error={errorMessage} />
       ) : events.length === 0 ? (
-        <div className="empty-state">Belum ada aktivitas agent.</div>
+        <EmptyState message="Belum ada aktivitas agent." />
       ) : (
         <ul className="list">
           {events.map(event => (
@@ -39,14 +26,10 @@ function AgentActivityList({ events, isLoading, errorMessage }) {
               <div className="agent-event-main">
                 <p className="item-title">{event.message || '(tanpa pesan)'}</p>
                 <span className="meta-line">Action: {event.action || '-'}</span>
-                {event.error_message ? (
-                  <span className="meta-line error-text">{event.error_message}</span>
-                ) : null}
+                {event.error_message && <span className="meta-line error-text">{event.error_message}</span>}
               </div>
               <div className="agent-event-meta">
-                <span className={`status-pill ${normalizeStatusClass(event.status)}`}>
-                  {event.status || 'unknown'}
-                </span>
+                <StatusPill status={event.status} />
                 <span className="meta-line">{formatDate(event.created_at)}</span>
               </div>
             </li>

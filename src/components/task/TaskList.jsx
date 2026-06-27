@@ -1,3 +1,6 @@
+import EmptyState from '../shared/EmptyState'
+import PixelPill from '../shared/PixelPill'
+
 function TaskList({ tasks, onToggle, onDelete, isLoading }) {
   const completedCount = tasks.filter(task => Boolean(task.is_completed)).length
 
@@ -14,9 +17,9 @@ function TaskList({ tasks, onToggle, onDelete, isLoading }) {
       </div>
 
       {isLoading ? (
-        <div className="empty-state">Memuat daftar tugas...</div>
+        <EmptyState loading />
       ) : tasks.length === 0 ? (
-        <div className="empty-state">Belum ada tugas. Tambahkan lewat Telegram.</div>
+        <EmptyState message="Belum ada tugas. Tambahkan lewat Telegram." />
       ) : (
         <ul className="list">
           {tasks.map(task => (
@@ -31,6 +34,13 @@ function TaskList({ tasks, onToggle, onDelete, isLoading }) {
               <span className={`task-name ${task.is_completed ? 'is-completed' : ''}`}>
                 {task.name}
               </span>
+              {task.priority && (
+                <div style={{ marginLeft: 'auto', marginRight: '8px' }}>
+                  <PixelPill tone={task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'yellow' : 'mint'}>
+                    {task.priority}
+                  </PixelPill>
+                </div>
+              )}
               <button
                 className="icon-button"
                 type="button"
