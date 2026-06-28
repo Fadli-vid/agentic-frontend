@@ -35,7 +35,7 @@ function TaskList({ tasks, onToggle, onDelete, isLoading }) {
                 {task.name}
               </span>
               {task.priority && (
-                <div style={{ marginLeft: 'auto', marginRight: '8px' }}>
+                <div className="task-priority">
                   <PixelPill tone={task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'yellow' : 'mint'}>
                     {task.priority}
                   </PixelPill>

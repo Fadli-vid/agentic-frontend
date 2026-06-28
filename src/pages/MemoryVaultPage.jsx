@@ -8,14 +8,14 @@ function MemorySection({ title, eyebrow, tone, memories }) {
   if (memories.length === 0) return null
   return (
     <PixelCard eyebrow={eyebrow} title={title} sticker={`${memories.length}`} stickerTone={tone}>
-      <div className="memory-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div className="memory-list">
         {memories.map((m, i) => (
-          <div key={m.id || i} className="memory-item" style={{ background: 'var(--surface-sunken)', padding: '12px', borderRadius: '4px', border: '1px solid var(--border)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-              <span className="memory-time" style={{ fontWeight: 'bold', color: 'var(--accent-sky)' }}>{m.category || 'note'}</span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>{m.created_at ? new Date(m.created_at).toLocaleDateString('id-ID') : ''}</span>
+          <div key={m.id || i} className="memory-item is-detailed">
+            <div className="memory-item-header">
+              <span className="memory-time is-accent">{m.category || 'note'}</span>
+              <span className="memory-date">{m.created_at ? new Date(m.created_at).toLocaleDateString('id-ID') : ''}</span>
             </div>
-            <p className="memory-text" style={{ margin: 0 }}>{m.title || m.content || '-'}</p>
+            <p className="memory-text">{m.title || m.content || '-'}</p>
           </div>
         ))}
       </div>
@@ -50,7 +50,7 @@ function MemoryVaultPage() {
       <PixelCard eyebrow="Search" title="Cari Memori" stickerTone="sky">
         <input className="search-input" type="text" placeholder="Cari memori..." value={query} onChange={handleSearch} />
         {searchResults && (
-          <div className="memory-list" style={{ marginTop: 12 }}>
+          <div className="memory-list mt-3">
             {searchResults.length === 0 ? (
               <EmptyState message="Tidak ada hasil ditemukan." />
             ) : (

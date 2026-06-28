@@ -13,7 +13,7 @@ function AnalyticsPage() {
         {isLoading ? <EmptyState loading /> : (
           <>
             <ProgressBar value={value} tone="mint" />
-            <p className="summary-footnote" style={{ marginTop: 8 }}>
+            <p className="summary-footnote mt-2">
               Berdasarkan tugas, kebiasaan, dan target minggu ini.
             </p>
           </>
@@ -21,9 +21,9 @@ function AnalyticsPage() {
       </PixelCard>
 
       <PixelCard eyebrow="Weekly Report" title="Laporan Mingguan" sticker="Ready" stickerTone="sky">
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '100px', padding: '16px', background: 'var(--surface-sunken)', borderRadius: '4px', border: '1px solid var(--border)' }}>
+        <div className="bar-chart">
           {[40, 65, 30, 85, 50, 90, 75].map((h, i) => (
-            <div key={i} style={{ flex: 1, height: `${h}%`, background: 'var(--accent-sky)', borderRadius: '2px 2px 0 0', border: '1px solid var(--border)', borderBottom: 'none' }} title={`Hari ${i+1}`} />
+            <div key={i} className="bar-chart-bar" style={{ height: `${h}%` }} title={`Hari ${i+1}`} />
           ))}
         </div>
       </PixelCard>
@@ -33,12 +33,12 @@ function AnalyticsPage() {
       </PixelCard>
 
       <PixelCard eyebrow="Habit Trends" title="Tren Kebiasaan" sticker="Ready" stickerTone="mint">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '16px', background: 'var(--surface-sunken)', borderRadius: '4px', border: '1px solid var(--border)' }}>
+        <div className="habit-trends">
           {['Membaca', 'Olahraga', 'Meditasi'].map((habit, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ width: '80px', fontSize: '0.8rem', fontWeight: 'bold' }}>{habit}</span>
-              <div style={{ flex: 1, height: '16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
-                <div style={{ width: `${[80, 45, 65][i]}%`, height: '100%', background: 'var(--accent-mint)' }} />
+            <div key={i} className="habit-trend-row">
+              <span className="habit-trend-label">{habit}</span>
+              <div className="habit-trend-track">
+                <div className="habit-trend-fill" style={{ width: `${[80, 45, 65][i]}%` }} />
               </div>
             </div>
           ))}

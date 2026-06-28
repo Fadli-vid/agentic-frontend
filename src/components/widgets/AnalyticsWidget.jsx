@@ -6,7 +6,7 @@ function AnalyticsWidget({ score = null }) {
   return (
     <PixelCard eyebrow="Analytics" title="Skor Produktivitas" sticker={`${Math.round(value)}%`} stickerTone="mint">
       <ProgressBar value={value} tone="mint" />
-      <p className="summary-footnote" style={{ marginTop: 8 }}>
+      <p className="summary-footnote mt-2">
         Berdasarkan tugas, kebiasaan, dan target minggu ini.
       </p>
     </PixelCard>

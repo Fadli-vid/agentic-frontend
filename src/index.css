@@ -20,10 +20,44 @@
   --accent-lavender: #dccbff;
 
   --text-h: var(--ink);
+  --surface-sunken: #f1f4ff;
+  --text-dim: var(--muted);
 
   --sans: 'Sora', 'Trebuchet MS', sans-serif;
   --heading: 'Pixelify Sans', 'Sora', sans-serif;
   --mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  /* ── Spacing scale (8px base) ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+
+  /* ── Typography scale ── */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: clamp(26px, 3vw, 40px);
+
+  /* ── Line-height scale ── */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.6;
+
+  /* ── Border radius ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+
+  /* ── Transitions ── */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
 
   font: 16px/150% var(--sans);
   letter-spacing: 0.2px;
@@ -45,6 +79,11 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent-sky);
+  outline-offset: 2px;
 }
 
 #root {
