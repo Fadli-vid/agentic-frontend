@@ -4,6 +4,10 @@ import TaskList from '../components/task/TaskList'
 import TaskModal from '../components/task/TaskModal'
 import PixelCard from '../components/cards/PixelCard'
 import StatCard from '../components/cards/StatCard'
+import PixelSelect from '../components/shared/PixelSelect'
+import PixelInput from '../components/shared/PixelInput'
+import PixelButton from '../components/shared/PixelButton'
+import PixelToolbar from '../components/shared/PixelToolbar'
 
 const FILTERS = ['all', 'pending', 'in_progress', 'completed']
 
@@ -82,8 +86,8 @@ function TaskManagerPage() {
         </div>
       </PixelCard>
 
-      <div className="page-toolbar" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className="stack-lg mb-3">
+        <PixelToolbar>
           <div className="filter-tabs">
             {FILTERS.map(f => (
               <button key={f} type="button" className={`filter-tab ${activeFilter === f ? 'is-active' : ''}`} onClick={() => handleFilterChange(f)}>
@@ -92,30 +96,37 @@ function TaskManagerPage() {
             ))}
           </div>
 
-          <select value={activePriority} onChange={handlePriorityChange} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+          <PixelSelect value={activePriority} onChange={handlePriorityChange}>
             <option value="all">Semua Prioritas</option>
             <option value="high">Tinggi</option>
             <option value="medium">Sedang</option>
             <option value="low">Rendah</option>
-          </select>
+          </PixelSelect>
 
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <select value={sortField} onChange={handleSortFieldChange} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+          <div className="inline">
+            <PixelSelect value={sortField} onChange={handleSortFieldChange}>
               <option value="created_at">Tanggal Dibuat</option>
               <option value="deadline_at">Tenggat Waktu</option>
               <option value="priority">Prioritas</option>
               <option value="name">Nama</option>
-            </select>
-            <button type="button" className="icon-button" onClick={handleSortDirectionChange} style={{ padding: '0.5rem', minWidth: '40px' }} title={sortDirection === 'asc' ? 'Naik' : 'Turun'}>
+            </PixelSelect>
+            <PixelButton variant="icon" onClick={handleSortDirectionChange} title={sortDirection === 'asc' ? 'Naik' : 'Turun'}>
               {sortDirection === 'asc' ? '🔼' : '🔽'}
-            </button>
+            </PixelButton>
           </div>
-        </div>
+        </PixelToolbar>
 
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <input className="search-input" type="text" placeholder="Cari tugas..." value={search} onChange={handleSearchChange} style={{ flex: 1 }} />
-          <button className="btn btn-primary" onClick={handleAddClick} style={{ padding: '0.5rem 1rem' }}>+ Tambah</button>
-        </div>
+        <PixelToolbar>
+          <PixelInput 
+            className="search-input" 
+            placeholder="Cari tugas..." 
+            value={search} 
+            onChange={handleSearchChange} 
+          />
+          <PixelButton onClick={handleAddClick}>
+            + Tambah
+          </PixelButton>
+        </PixelToolbar>
       </div>
 
       {error && <div className="status-message status-error">{error}</div>}
@@ -123,10 +134,10 @@ function TaskManagerPage() {
       <TaskList tasks={tasks} onToggle={handleUpdateStatus} onDelete={removeTask} onEdit={handleEditClick} isLoading={isLoading} />
 
       {pagination && pagination.last_page > 1 && (
-        <div className="pagination" style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '1rem' }}>
-          <button disabled={pagination.current_page === 1} onClick={() => refresh(pagination.current_page - 1)} className="icon-button">Sebelumnya</button>
-          <span style={{ alignSelf: 'center' }}>Hal {pagination.current_page} dari {pagination.last_page}</span>
-          <button disabled={pagination.current_page === pagination.last_page} onClick={() => refresh(pagination.current_page + 1)} className="icon-button">Selanjutnya</button>
+        <div className="pagination inline-lg justify-center mt-3">
+          <PixelButton variant="icon" disabled={pagination.current_page === 1} onClick={() => refresh(pagination.current_page - 1)}>Sebelumnya</PixelButton>
+          <span>Hal {pagination.current_page} dari {pagination.last_page}</span>
+          <PixelButton variant="icon" disabled={pagination.current_page === pagination.last_page} onClick={() => refresh(pagination.current_page + 1)}>Selanjutnya</PixelButton>
         </div>
       )}
 
