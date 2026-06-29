@@ -1,7 +1,7 @@
 import EmptyState from '../shared/EmptyState'
 import PixelPill from '../shared/PixelPill'
 
-function TaskList({ tasks, onToggle, onDelete, isLoading }) {
+function TaskList({ tasks, onToggle, onDelete, onEdit, isLoading }) {
   const completedCount = tasks.filter(task => Boolean(task.is_completed)).length
 
   return (
@@ -23,32 +23,58 @@ function TaskList({ tasks, onToggle, onDelete, isLoading }) {
       ) : (
         <ul className="list">
           {tasks.map(task => (
-            <li key={task.id} className="list-item task-item">
-              <input
-                className="task-checkbox"
-                type="checkbox"
-                checked={Boolean(task.is_completed)}
-                onChange={() => onToggle(task.id)}
-                aria-label={`Tandai tugas ${task.name}`}
-              />
-              <span className={`task-name ${task.is_completed ? 'is-completed' : ''}`}>
-                {task.name}
-              </span>
-              {task.priority && (
-                <div className="task-priority">
-                  <PixelPill tone={task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'yellow' : 'mint'}>
-                    {task.priority}
-                  </PixelPill>
+            <li key={task.id} className="list-item task-item" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '1rem' }}>
+                <input
+                  className="task-checkbox"
+                  type="checkbox"
+                  checked={task.status === 'completed'}
+                  onChange={() => onToggle(task.id, task.status === 'completed' ? 'pending' : 'completed')}
+                  aria-label={`Tandai tugas ${task.name}`}
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <span className={`task-name ${task.status === 'completed' ? 'is-completed' : ''}`}>
+                    {task.name}
+                  </span>
+                  {task.description && <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{task.description}</span>}
                 </div>
-              )}
-              <button
-                className="icon-button"
-                type="button"
-                onClick={() => onDelete(task.id)}
-                aria-label={`Hapus tugas ${task.name}`}
-              >
-                🗑️
-              </button>
+                
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <div className="task-priority">
+                    <PixelPill tone={task.status === 'completed' ? 'mint' : task.status === 'in_progress' ? 'yellow' : 'sky'}>
+                      {task.status === 'in_progress' ? 'Proses' : task.status === 'completed' ? 'Selesai' : 'Menunggu'}
+                    </PixelPill>
+                  </div>
+                  {task.priority && (
+                    <div className="task-priority">
+                      <PixelPill tone={task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'yellow' : 'sky'}>
+                        {task.priority === 'high' ? 'Tinggi' : task.priority === 'medium' ? 'Sedang' : 'Rendah'}
+                      </PixelPill>
+                    </div>
+                  )}
+                  {task.deadline_at && (
+                    <div className="task-deadline" style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                      📅 {new Date(task.deadline_at).toLocaleDateString('id-ID')}
+                    </div>
+                  )}
+                  <button
+                    className="icon-button"
+                    type="button"
+                    onClick={() => onEdit(task)}
+                    aria-label={`Edit tugas ${task.name}`}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    className="icon-button"
+                    type="button"
+                    onClick={() => onDelete(task.id)}
+                    aria-label={`Hapus tugas ${task.name}`}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
