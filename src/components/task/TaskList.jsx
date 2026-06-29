@@ -53,8 +53,11 @@ function TaskList({ tasks, onToggle, onDelete, onEdit, isLoading }) {
                     </div>
                   )}
                   {task.deadline_at && (
-                    <div className="task-deadline" style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
-                      📅 {new Date(task.deadline_at).toLocaleDateString('id-ID')}
+                    <div className="task-deadline" style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span>📅 {new Date(task.deadline_at).toLocaleDateString('id-ID')}</span>
+                      {new Date(task.deadline_at) < new Date(new Date().setHours(0,0,0,0)) && task.status !== 'completed' && (
+                        <span style={{ color: '#ff4444', fontWeight: 'bold' }}>🔴 Terlambat</span>
+                      )}
                     </div>
                   )}
                   <button

@@ -10,13 +10,34 @@ const FILTERS = ['all', 'pending', 'in_progress', 'completed']
 function TaskManagerPage() {
   const { tasks, statistics, isLoading, error, handleUpdateStatus, handleCreateTask, handleUpdateTask, removeTask, filters, setFilters, pagination, refresh } = useTasks()
   const [activeFilter, setActiveFilter] = useState('all')
+  const [activePriority, setActivePriority] = useState('all')
   const [search, setSearch] = useState('')
+  const [sortField, setSortField] = useState('created_at')
+  const [sortDirection, setSortDirection] = useState('desc')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
 
   const handleFilterChange = (f) => {
     setActiveFilter(f)
     setFilters(prev => ({ ...prev, status: f === 'all' ? '' : f }))
+  }
+
+  const handlePriorityChange = (e) => {
+    const p = e.target.value
+    setActivePriority(p)
+    setFilters(prev => ({ ...prev, priority: p === 'all' ? '' : p }))
+  }
+
+  const handleSortFieldChange = (e) => {
+    const field = e.target.value
+    setSortField(field)
+    setFilters(prev => ({ ...prev, sort: field }))
+  }
+
+  const handleSortDirectionChange = () => {
+    const nextDir = sortDirection === 'asc' ? 'desc' : 'asc'
+    setSortDirection(nextDir)
+    setFilters(prev => ({ ...prev, direction: nextDir }))
   }
 
   const handleSearchChange = (e) => {
@@ -61,16 +82,40 @@ function TaskManagerPage() {
         </div>
       </PixelCard>
 
-      <div className="page-toolbar">
-        <div className="filter-tabs">
-          {FILTERS.map(f => (
-            <button key={f} type="button" className={`filter-tab ${activeFilter === f ? 'is-active' : ''}`} onClick={() => handleFilterChange(f)}>
-              {f === 'all' ? 'Semua' : f === 'pending' ? 'Menunggu' : f === 'in_progress' ? 'Proses' : 'Selesai'}
+      <div className="page-toolbar" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="filter-tabs">
+            {FILTERS.map(f => (
+              <button key={f} type="button" className={`filter-tab ${activeFilter === f ? 'is-active' : ''}`} onClick={() => handleFilterChange(f)}>
+                {f === 'all' ? 'Semua Status' : f === 'pending' ? 'Menunggu' : f === 'in_progress' ? 'Proses' : 'Selesai'}
+              </button>
+            ))}
+          </div>
+
+          <select value={activePriority} onChange={handlePriorityChange} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+            <option value="all">Semua Prioritas</option>
+            <option value="high">Tinggi</option>
+            <option value="medium">Sedang</option>
+            <option value="low">Rendah</option>
+          </select>
+
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <select value={sortField} onChange={handleSortFieldChange} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+              <option value="created_at">Tanggal Dibuat</option>
+              <option value="deadline_at">Tenggat Waktu</option>
+              <option value="priority">Prioritas</option>
+              <option value="name">Nama</option>
+            </select>
+            <button type="button" className="icon-button" onClick={handleSortDirectionChange} style={{ padding: '0.5rem', minWidth: '40px' }} title={sortDirection === 'asc' ? 'Naik' : 'Turun'}>
+              {sortDirection === 'asc' ? '🔼' : '🔽'}
             </button>
-          ))}
+          </div>
         </div>
-        <input className="search-input" type="text" placeholder="Cari tugas..." value={search} onChange={handleSearchChange} />
-        <button className="btn btn-primary" onClick={handleAddClick} style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}>+ Tambah</button>
+
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <input className="search-input" type="text" placeholder="Cari tugas..." value={search} onChange={handleSearchChange} style={{ flex: 1 }} />
+          <button className="btn btn-primary" onClick={handleAddClick} style={{ padding: '0.5rem 1rem' }}>+ Tambah</button>
+        </div>
       </div>
 
       {error && <div className="status-message status-error">{error}</div>}

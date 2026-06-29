@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 function TaskModal({ task, onClose, onSave }) {
   const [name, setName] = useState('')
@@ -6,6 +6,7 @@ function TaskModal({ task, onClose, onSave }) {
   const [status, setStatus] = useState('pending')
   const [priority, setPriority] = useState('medium')
   const [deadlineAt, setDeadlineAt] = useState('')
+  const inputRef = useRef(null)
 
   useEffect(() => {
     if (task) {
@@ -21,7 +22,28 @@ function TaskModal({ task, onClose, onSave }) {
       setPriority('medium')
       setDeadlineAt('')
     }
+    
+    // Auto focus on mount
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+      }
+    }, 10)
   }, [task])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault()
+        handleSubmit(e)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -43,7 +65,7 @@ function TaskModal({ task, onClose, onSave }) {
         <form onSubmit={handleSubmit} className="modal-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
           <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <label>Nama Tugas</label>
-            <input type="text" value={name} onChange={e => setName(e.target.value)} required style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+            <input ref={inputRef} type="text" value={name} onChange={e => setName(e.target.value)} required style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
           </div>
           <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <label>Deskripsi</label>

@@ -66,34 +66,52 @@ export function useTasks(initialFilters = {}) {
   }, [tasks, loadStatistics])
 
   const handleCreateTask = useCallback(async (data) => {
+    // Optimistic ID just for rendering temporarily
+    const tempId = Date.now()
+    const optimisticTask = { ...data, id: tempId, created_at: new Date().toISOString() }
+    
+    setTasks(prev => [optimisticTask, ...prev])
+    
     try {
       const response = await createTask(data)
       if (response.success) {
-        refresh()
+        // Replace temp task with actual task
+        setTasks(prev => prev.map(t => t.id === tempId ? response.data : t))
         loadStatistics()
         return response.data
       }
       throw new Error(response.message)
     } catch (err) {
       console.error('Failed to create task:', err)
+      // Rollback
+      setTasks(prev => prev.filter(t => t.id !== tempId))
       throw err
     }
-  }, [refresh, loadStatistics])
+  }, [loadStatistics])
 
   const handleUpdateTask = useCallback(async (id, data) => {
+    const previous = tasks
+    
+    setTasks(prev => prev.map(task => {
+      if (task.id !== id) return task
+      return { ...task, ...data }
+    }))
+    
     try {
       const response = await updateTask(id, data)
       if (response.success) {
-        refresh()
+        setTasks(prev => prev.map(task => task.id === id ? response.data : task))
         loadStatistics()
         return response.data
       }
       throw new Error(response.message)
     } catch (err) {
       console.error('Failed to update task:', err)
+      // Rollback
+      setTasks(previous)
       throw err
     }
-  }, [refresh, loadStatistics])
+  }, [tasks, loadStatistics])
 
   const removeTask = useCallback(async (id) => {
     setError('')
